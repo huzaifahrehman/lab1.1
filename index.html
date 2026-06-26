@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Archive</title>
+
+<style>
+body{
+    background:#111;
+    color:#00ff88;
+    font-family:Consolas, monospace;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.box{
+    width:400px;
+    padding:30px;
+    border:2px solid #00ff88;
+    border-radius:10px;
+    text-align:center;
+    background:#181818;
+    box-shadow:0 0 15px #00ff88;
+}
+
+input{
+    width:90%;
+    padding:10px;
+    margin-top:15px;
+    background:#000;
+    color:#00ff88;
+    border:1px solid #00ff88;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 20px;
+    background:#00ff88;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#error{
+    color:red;
+    margin-top:15px;
+    min-height:20px;
+}
+
+#secret{
+    display:none;
+    margin-top:25px;
+}
+
+code{
+    color:#00ff88;
+    font-size:18px;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>Research Archive</h2>
+
+<p id="status">Authentication Required</p>
+
+<div id="loginArea">
+
+<input
+type="password"
+id="pass"
+placeholder="Enter Password">
+
+<br>
+
+<button onclick="login()">
+Unlock
+</button>
+
+<p id="error"></p>
+
+</div>
+
+<div id="secret">
+
+<h3>Access Granted</h3>
+
+<p>
+Excellent work.
+</p>
+
+<p>
+Your next clue:
+</p>
+
+<code>
+FLAG_PART_2 = github_
+</code>
+
+<br><br>
+
+<p>
+The final fragment is still hidden...
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+// SHA-256 hash of: isimportant
+const PASSWORD_HASH =
+"f958ab1d0b48dc7f0bfb8f07bb7c331c68d28f89b85899f8f7e82b85d64c0c6d";
+
+async function sha256(message){
+
+    const msgBuffer = new TextEncoder().encode(message);
+
+    const hashBuffer =
+        await crypto.subtle.digest("SHA-256", msgBuffer);
+
+    const hashArray =
+        Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray
+        .map(b => b.toString(16).padStart(2,"0"))
+        .join("");
+
+}
+
+async function login(){
+
+    let input =
+        document.getElementById("pass").value;
+
+    let hash =
+        await sha256(input);
+
+    if(hash === PASSWORD_HASH){
+
+        document.getElementById("status").innerHTML = "Auth Pass";
+
+        document.getElementById("loginArea").style.display = "none";
+
+        document.getElementById("secret").style.display = "block";
+
+    }else{
+
+        document.getElementById("error").innerHTML = "Incorrect Password";
+
+    }
+
+}
+
+</script>
+
+<!--
+
+Congratulations!
+
+FLAG_PART_2 = github_
+
+Hint:
+The final piece isn't here.
+
+Hex:
+34326d617a65
+
+-->
+
+</body>
+</html>
